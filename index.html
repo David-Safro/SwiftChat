@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TSA Chat</title>
+    <meta charset="UTF-8">
+    <style>
+      body {
+      margin: 0; 
+      padding-bottom: 3rem; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      height:50%; 
+      background: rgb(23,29,32);
+     
+      
+      }
+
+      #form { 
+        background:  rgb(23,29,32); 
+        padding: 0.25rem; 
+        position: fixed; 
+        right: 200; 
+        display: flex; 
+        height: 2.5rem; 
+        box-sizing: border-box; 
+        backdrop-filter: blur(10px);
+        color:rgb(255, 255, 255);
+        
+         }
+
+      #input { 
+        border: none; 
+        padding: 0 1rem; 
+        flex-grow: 10; 
+        border-radius: 2rem;
+        margin: 0.1rem;
+        background: #00224E;
+        color:rgb(255, 255, 255);
+        width:610px;
+
+      }
+      #input:focus { 
+        outline: none; 
+        
+        }
+
+      #form > button { 
+        background: #001a38; 
+        border: none; 
+        padding: 0 1rem; 
+        margin: 0.25rem; 
+        border-radius: 3px; 
+        outline: none; 
+        color: rgb(255, 255, 255);
+        }
+
+      #messages { 
+        position: fixed;
+        bottom:40px;
+        left: 0;
+        right: 20;
+        list-style-type: none; 
+        margin: 0; 
+        padding: 0; 
+        background: rgba(112, 126, 139, 0.15);
+        height:880px;
+        width:700px;
+        border:9px double #003367;
+        overflow: scroll;
+        overflow-wrap: break-word;
+        overflow-x:hidden;
+        overflow-y:visible;
+        color:azure;
+        }
+
+      #messages > li { 
+        padding: 0.5rem 1rem; }
+      
+      ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+      }
+
+      ::-webkit-scrollbar-track {
+      border: 1px solid rgb(10, 3, 100);
+      border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+      background: rgb(8, 1, 73);  
+      border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+      background: #0b47ee;  
+      }
+
+      .title{
+        color:aliceblue;
+        position:fixed;
+        left:1100px;
+        top: 50px;
+        font-size: 80px;
+        font-family: 'Andromedaclipsis', sans-serif;
+      }
+
+      
+
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <div class="title">
+    <p1>SwiftChat</p1>
+  </div>
+    </body>
+  <script src="/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+   var username = null;
+  var usernme = prompt("enter name:");
+  if(usernme===undefined){
+      username = "Anonymous";
+      console.log('yes')
+    }else{
+      username=usernme;
+      }
+  const room = prompt("enter the room name:")
+  socket.emit("joined", username, room)
+  var messages = document.getElementById('messages');
+  var form = document.getElementById('form');
+  var input = document.getElementById('input');
+  
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (input.value) {
+      input.value = username+': '+input.value;
+      socket.emit('chat message', input.value);
+      input.value = '';
+    }
+  });
+
+  socket.on('chat message', function(msg) {
+    var item = document.createElement('li');
+    item.textContent = msg;
+    messages.appendChild(item);
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+
+  window.setInterval(function() {
+    var elem = document.getElementById('messages');
+    elem.scrollTop = elem.scrollHeight;
+    console.log('yes')
+  }, 10);
+
+
+
+</script>
+  </body>
+</html>
